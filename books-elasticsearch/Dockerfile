@@ -15,6 +15,6 @@ RUN mvn clean package
 # Copiamos desde "build" el JAR generado (la ruta de generacion es la misma que veriamos en local) y lo movemos y renombramos en destino como 
 # Marcamos el punto de arranque de la imagen con el comando "java -jar app.jar" que ejecutará nuestro componente.
 FROM openjdk:17
-EXPOSE 8082
-COPY --from=build /target/library-orders-0.0.1-SNAPSHOT.jar app.jar
+EXPOSE 8088
+COPY --from=build /target/inventory-products-0.0.1-SNAPSHOT.jar app.jar
 ENTRYPOINT ["java", "-jar", "/app.jar"]
