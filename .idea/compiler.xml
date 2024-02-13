@@ -8,6 +8,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="books" />
+        <module name="library-books-elasticsearch" />
         <module name="gateway-filters" />
         <module name="library-orders" />
         <module name="eureka" />
@@ -19,6 +20,7 @@
       <module name="books" options="-parameters" />
       <module name="eureka" options="-parameters" />
       <module name="gateway-filters" options="-parameters" />
+      <module name="library-books-elasticsearch" options="-parameters" />
       <module name="library-orders" options="-parameters" />
     </option>
   </component>

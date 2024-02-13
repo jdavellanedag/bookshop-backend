@@ -8,9 +8,9 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.unir</groupId>
-	<artifactId>inventory-products-elasticsearch</artifactId>
+	<artifactId>library-books-elasticsearch</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>products</name>
+	<name>books</name>
 	<description>Aplicación que gestiona los productos de una tienda - Usando Elasticsearch</description>
 	<properties>
 		<java.version>17</java.version>

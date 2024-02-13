@@ -1,4 +1,4 @@
-package com.unir.products.model.response;
+package com.library.books.model.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

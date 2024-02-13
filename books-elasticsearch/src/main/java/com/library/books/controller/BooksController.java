@@ -1,10 +1,11 @@
-package com.unir.products.controller;
+package com.library.books.controller;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
-import com.unir.products.model.response.ProductsQueryResponse;
+import com.library.books.model.db.Book;
+import com.library.books.model.request.CreateBookRequest;
+import com.library.books.model.response.BooksQueryResponse;
+import com.library.books.service.BooksService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,9 +17,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.unir.products.model.db.Product;
-import com.unir.products.model.request.CreateProductRequest;
-import com.unir.products.service.ProductsService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,34 +31,37 @@ public class BooksController {
 	@GetMapping("/books")
 	public ResponseEntity<BooksQueryResponse> getBooks(
 			@RequestHeader Map<String, String> headers,
-			@RequestParam(required = false) String description, 
-			@RequestParam(required = false) String name, 
-			@RequestParam(required = false) String country,
+			@RequestParam(required = false) String nombre,
+			@RequestParam(required = false) String autor,
+			@RequestParam(required = false) String anoPublicacion,
+			@RequestParam(required = false) String isbn,
+			@RequestParam(required = false) String sinopsis,
+			@RequestParam(required = false) String idioma,
 			@RequestParam(required = false, defaultValue = "false") Boolean aggregate) {
 
 		log.info("headers: {}", headers);
-		ProductsQueryResponse products = service.getProducts(name, description, country, aggregate);
-		return ResponseEntity.ok(products);
+		BooksQueryResponse books = service.getBooks(nombre, autor, anoPublicacion, isbn, sinopsis, idioma, aggregate);
+		return ResponseEntity.ok(books);
 	}
 
-	@GetMapping("/products/{productId}")
-	public ResponseEntity<Product> getProduct(@PathVariable String productId) {
+	@GetMapping("/books/{bookId}")
+	public ResponseEntity<Book> getBook(@PathVariable String bookId) {
 
-		log.info("Request received for product {}", productId);
-		Product product = service.getProduct(productId);
+		log.info("Request received for product {}", bookId);
+		Book book = service.getBook(bookId);
 
-		if (product != null) {
-			return ResponseEntity.ok(product);
+		if (book != null) {
+			return ResponseEntity.ok(book);
 		} else {
 			return ResponseEntity.notFound().build();
 		}
 
 	}
 
-	@DeleteMapping("/products/{productId}")
-	public ResponseEntity<Void> deleteProduct(@PathVariable String productId) {
+	@DeleteMapping("/books/{bookId}")
+	public ResponseEntity<Void> deleteBook(@PathVariable String bookId) {
 
-		Boolean removed = service.removeProduct(productId);
+		Boolean removed = service.removeBook(bookId);
 
 		if (Boolean.TRUE.equals(removed)) {
 			return ResponseEntity.ok().build();
@@ -70,13 +71,13 @@ public class BooksController {
 
 	}
 
-	@PostMapping("/products")
-	public ResponseEntity<Product> getProduct(@RequestBody CreateProductRequest request) {
+	@PostMapping("/books")
+	public ResponseEntity<Book> getBook(@RequestBody CreateBookRequest request) {
 
-		Product createdProduct = service.createProduct(request);
+		Book createdBook = service.createBook(request);
 
-		if (createdProduct != null) {
-			return ResponseEntity.status(HttpStatus.CREATED).body(createdProduct);
+		if (createdBook != null) {
+			return ResponseEntity.status(HttpStatus.CREATED).body(createdBook);
 		} else {
 			return ResponseEntity.badRequest().build();
 		}

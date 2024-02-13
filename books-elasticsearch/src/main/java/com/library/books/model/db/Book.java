@@ -16,7 +16,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructo
+@NoArgsConstructor
 @Builder
 @ToString
 public class Book {
@@ -30,8 +30,8 @@ public class Book {
 	@Field(type = FieldType.Search_As_You_Type, name = "Autor")
 	private String autor;
 	
-	@Field(type = FieldType.Date, name = "AnoPublicacion")
-	private Date anoPublicacion;
+	@Field(type = FieldType.Keyword, name = "AnoPublicacion")
+	private String anoPublicacion;
 
 	@Field(type = FieldType.Keyword, name = "ISBN")
 	private String isbn;
