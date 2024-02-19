@@ -16,9 +16,9 @@ public class BooksServiceImpl implements BooksService {
 	private final DataAccessRepository repository;
 
 	@Override
-	public BooksQueryResponse getBooks(String nombre, String autor, String anoPublicacion, String isbn, String sinopsis, String idioma, Boolean aggregate) {
+	public BooksQueryResponse getBooks(String search, String anoPublicacion, String idioma, Boolean aggregate) {
 		//Ahora por defecto solo devolvera productos visibles
-		return repository.findBooks(nombre, autor, anoPublicacion, isbn, sinopsis, idioma, aggregate);
+		return repository.findBooks(search, anoPublicacion, idioma, aggregate);
 	}
 
 	@Override

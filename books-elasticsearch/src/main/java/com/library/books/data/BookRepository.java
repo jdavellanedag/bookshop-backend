@@ -11,7 +11,7 @@ public interface BookRepository extends ElasticsearchRepository<Book, String> {
 
 	Optional<Book> findById(String id);
 	
-	Book save(Book product);
+	Book save(Book book);
 	
 	void delete(Book book);
 	

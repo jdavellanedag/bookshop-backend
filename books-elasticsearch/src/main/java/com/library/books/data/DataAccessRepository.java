@@ -37,8 +37,7 @@ public class DataAccessRepository {
     private final BookRepository bookRepository;
     private final ElasticsearchOperations elasticClient;
 
-    private final String[] nombreSearchFields = {"Nombre", "Nombre._2gram", "Nombre._3gram"};
-    private final String[] autorSearchFields = {"Autor", "Autor._2gram", "Autor._3gram"};
+    private final String[] searchSearchFields = {"Nombre", "Nombre._2gram", "Nombre._3gram", "Autor", "Autor._2gram", "Autor._3gram", "Sinopsis", "ISBN"};
 
     public Book save(Book book) {
         return bookRepository.save(book);
@@ -54,35 +53,23 @@ public class DataAccessRepository {
 	}
 
     @SneakyThrows
-    public BooksQueryResponse findBooks(String nombre, String autor, String anoPublicacion, String isbn, String sinopsis, String idioma, Boolean aggregate) {
+    public BooksQueryResponse findBooks(String search, String anoPublicacion, String idioma, Boolean aggregate) {
 
         BoolQueryBuilder querySpec = QueryBuilders.boolQuery();
 
-        if (!StringUtils.isEmpty(nombre)) {
-            querySpec.must(QueryBuilders.multiMatchQuery(nombre, nombreSearchFields).type(Type.BOOL_PREFIX));
-        }
-
-        if (!StringUtils.isEmpty(autor)) {
-            querySpec.must(QueryBuilders.multiMatchQuery(autor, autorSearchFields).type(Type.BOOL_PREFIX));
+        if (!StringUtils.isEmpty(search)) {
+            querySpec.must(QueryBuilders.multiMatchQuery(search, searchSearchFields).type(Type.BOOL_PREFIX));
         }
 
         if (!StringUtils.isEmpty(anoPublicacion)) {
             querySpec.must(QueryBuilders.termQuery("AnoPublicacion", anoPublicacion));
         }
 
-        if (!StringUtils.isEmpty(isbn)) {
-            querySpec.must(QueryBuilders.termQuery("ISBN", isbn));
-        }
-
-        if (!StringUtils.isEmpty(sinopsis)) {
-            querySpec.must(QueryBuilders.matchQuery("Sinopsis", sinopsis));
-        }
-
         if (!StringUtils.isEmpty(idioma)) {
             querySpec.must(QueryBuilders.termQuery("Idioma", idioma));
         }
 
-        //Si no he recibido ningun parametro, busco todos los elementos.
+        //Si no he recibido ningún parámetro, busco todos los elementos.
         if (!querySpec.hasClauses()) {
             querySpec.must(QueryBuilders.matchAllQuery());
         }
@@ -112,7 +99,7 @@ public class DataAccessRepository {
             ParsedStringTerms idiomaAgg = (ParsedStringTerms) aggs.get("Idioma Aggregation");
 
             //Componemos una URI basada en serverFullAddress y query params para cada argumento, siempre que no viniesen vacios
-            String queryParams = getQueryParams(nombre, autor, anoPublicacion, isbn, sinopsis, idioma);
+            String queryParams = getQueryParams(search, anoPublicacion, idioma);
             idiomaAgg.getBuckets()
                     .forEach(
                             bucket -> responseAggs.add(
@@ -127,22 +114,16 @@ public class DataAccessRepository {
     /**
      * Componemos una URI basada en serverFullAddress y query params para cada argumento, siempre que no viniesen vacios
      *
-     * @param nombre        - nombre del libro
-     * @param autor - autor del libro
+     * @param search        - nombre, autor, isbn o sinopsis del libro
      * @param anoPublicacion     - año de publicación del libro
-     * @param isbn     - isbn del libro
-     * @param sinopsis     - sinopsis del libro
      * @param idioma     - idioma del libro
      * @return
      */
-    private String getQueryParams(String nombre, String autor, String anoPublicacion, String isbn, String sinopsis, String idioma) {
-        String queryParams = (StringUtils.isEmpty(nombre) ? "" : "&nombre=" + nombre)
-                + (StringUtils.isEmpty(autor) ? "" : "&autor=" + autor)
+    private String getQueryParams(String search, String anoPublicacion, String idioma) {
+        String queryParams = (StringUtils.isEmpty(search) ? "" : "&search=" + search)
                 + (StringUtils.isEmpty(anoPublicacion) ? "" : "&anoPublicacion=" + anoPublicacion)
-                + (StringUtils.isEmpty(isbn) ? "" : "&isbn=" + isbn)
-                + (StringUtils.isEmpty(sinopsis) ? "" : "&sinopsis=" + sinopsis)
                 + (StringUtils.isEmpty(idioma) ? "" : "&idioma=" + idioma);
-        // Eliminamos el ultimo & si existe
+        // Eliminamos el último & si existe
         return queryParams.endsWith("&") ? queryParams.substring(0, queryParams.length() - 1) : queryParams;
     }
 }
