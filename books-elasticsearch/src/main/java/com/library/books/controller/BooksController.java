@@ -8,14 +8,7 @@ import com.library.books.model.response.BooksQueryResponse;
 import com.library.books.service.BooksService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 import lombok.RequiredArgsConstructor;
@@ -75,6 +68,19 @@ public class BooksController {
 
 		if (createdBook != null) {
 			return ResponseEntity.status(HttpStatus.CREATED).body(createdBook);
+		} else {
+			return ResponseEntity.badRequest().build();
+		}
+
+	}
+
+	@PatchMapping("/books/{bookId}")
+	public ResponseEntity<Book> updateBook(@PathVariable String bookId, @RequestBody String patchBody) {
+
+		Book updatedBook = service.updateBook(bookId, patchBody);
+
+		if (updatedBook != null) {
+			return ResponseEntity.ok(updatedBook);
 		} else {
 			return ResponseEntity.badRequest().build();
 		}

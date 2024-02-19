@@ -15,4 +15,6 @@ public interface BooksService {
 	
 	Book createBook(CreateBookRequest request);
 
+	Book updateBook(String bookId, String request);
+
 }
