@@ -29,9 +29,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class DataAccessRepository {
 
-    @Value("${server.fullAddress}")
-    private String serverFullAddress;
-
     // Esta clase (y bean) es la unica que usan directamente los servicios para
     // acceder a los datos.
     private final BookRepository bookRepository;
@@ -98,7 +95,7 @@ public class DataAccessRepository {
             Map<String, Aggregation> aggs = result.getAggregations().asMap();
             ParsedStringTerms idiomaAgg = (ParsedStringTerms) aggs.get("Idioma Aggregation");
 
-            //Componemos una URI basada en serverFullAddress y query params para cada argumento, siempre que no viniesen vacios
+            //Componemos una URI basada en  query params para cada argumento, siempre que no viniesen vacios
             String queryParams = getQueryParams(search, anoPublicacion, idioma);
             idiomaAgg.getBuckets()
                     .forEach(
@@ -106,7 +103,7 @@ public class DataAccessRepository {
                                     new AggregationDetails(
                                             bucket.getKey().toString(),
                                             (int) bucket.getDocCount(),
-                                            serverFullAddress + "/books?idioma=" + bucket.getKey() + queryParams)));
+                                             "/books?idioma=" + bucket.getKey() + queryParams)));
         }
         return new BooksQueryResponse(result.getSearchHits().stream().map(SearchHit::getContent).toList(), responseAggs);
     }
